@@ -278,7 +278,7 @@ def generate_certificate(name):
 @app.route("/search", methods=["GET"])
 def search():
 
-    query = request.args.get("query")
+    query = request.args.get("query", "")
 
     conn = sqlite3.connect("memberhub.db")
     cursor = conn.cursor()
