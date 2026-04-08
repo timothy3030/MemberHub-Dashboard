@@ -8,7 +8,7 @@ import os
 import time
 
 def init_db():
-    conn = sqlite3.connect("memberhub.db")
+    conn = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -78,7 +78,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        conn = sqlite3.connect("memberhub.db")
+        conn = sqlite3.connect("/tmp/memberhub.db")
         cursor = conn.cursor()
 
         cursor.execute(
@@ -113,7 +113,7 @@ def save_member():
     join_date       = request.form["join_date"]
     expiry_date     = request.form["expiry_date"]
 
-    conn   = sqlite3.connect("memberhub.db")
+    conn   = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -131,7 +131,7 @@ def save_member():
 @app.route("/members")
 def members(): 
 
-    conn   = sqlite3.connect("memberhub.db")
+    conn   = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM members")
@@ -149,7 +149,7 @@ def dashboard():
     if "admin" not in session:
         return redirect("/")
     
-    conn = sqlite3.connect("memberhub.db")
+    conn = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     # TOTAL MEMBERS
@@ -227,7 +227,7 @@ def dashboard():
 @app.route("/delete/<int:id>")
 def delete_member(id): 
 
-    conn   = sqlite3.connect("memberhub.db")
+    conn   = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM members WHERE id=?", (id,))
@@ -280,7 +280,7 @@ def search():
 
     query = request.args.get("query", "")
 
-    conn = sqlite3.connect("memberhub.db")
+    conn = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     cursor.execute(
@@ -298,7 +298,7 @@ def search():
 @app.route("/edit/<int:id>")
 def edit_member(id):
 
-    conn = sqlite3.connect("memberhub.db")
+    conn = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM members WHERE id=?", (id,))
@@ -320,7 +320,7 @@ def update_member():
     join_date = request.form["join_date"]
     expiry_date = request.form["expiry_date"]
 
-    conn = sqlite3.connect("memberhub.db")
+    conn = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -352,7 +352,7 @@ def upload(id):
 
             file.save(filepath)
 
-            conn = sqlite3.connect("memberhub.db")
+            conn = sqlite3.connect("/tmp/memberhub.db")
             cursor = conn.cursor()
 
             cursor.execute(
@@ -371,7 +371,7 @@ def upload(id):
 @app.route("/documents/<int:id>")
 def documents(id):
 
-    conn = sqlite3.connect("memberhub.db")
+    conn = sqlite3.connect("/tmp/memberhub.db")
     cursor = conn.cursor()
 
     cursor.execute(
