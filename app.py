@@ -6,6 +6,8 @@ from reportlab.pdfgen import canvas
 import sqlite3
 import os
 import time
+import sys
+print("APP STARTED", file=sys.stderr)
 
 def init_db():
     conn = sqlite3.connect("/tmp/memberhub.db")
@@ -66,36 +68,9 @@ UPLOAD_FOLDER = "uploads"
 os.makedirs("uploads", exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-
-
-
-  # Home Page
-@app.route("/", methods=["GET","POST"])
-def login():
-
-    if request.method == "POST":
-
-        username = request.form["username"]
-        password = request.form["password"]
-
-        conn = sqlite3.connect("/tmp/memberhub.db")
-        cursor = conn.cursor()
-
-        cursor.execute(
-            "SELECT * FROM admin WHERE username=? AND password=?",
-            (username,password)
-        )
-
-        admin = cursor.fetchone()
-        conn.close()
-
-        if admin:
-            session["admin"] = username
-            return redirect("/dashboard")
-        else:
-            return "Invalid Login"
-
-    return render_template("login.html")
+@app.route("/")
+def test():
+    return "App is working!"
 
   # Add Member Page
 @app.route("/add_member")
