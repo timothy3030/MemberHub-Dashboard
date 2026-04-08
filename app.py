@@ -9,8 +9,11 @@ import time
 import sys
 print("APP STARTED", file=sys.stderr)
 
+def get_db():
+    return sqlite3.connect("/tmp/memberhub.db")
+       
 def init_db():
-    conn = sqlite3.connect("/tmp/memberhub.db")
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -51,9 +54,13 @@ def init_db():
     conn.commit()
     conn.close()
 
+
 app = Flask(__name__)
 app.secret_key = "memberhub_secret"
-init_db()
+
+with app.app_context():
+    init_db()
+
 
 @app.route("/logout")
 def logout():
@@ -77,7 +84,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        conn = sqlite3.connect("/tmp/memberhub.db")
+        conn = get_db()
         cursor = conn.cursor()
 
         cursor.execute(
@@ -112,7 +119,7 @@ def save_member():
     join_date       = request.form["join_date"]
     expiry_date     = request.form["expiry_date"]
 
-    conn   = sqlite3.connect("/tmp/memberhub.db")
+    conn   = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -130,7 +137,7 @@ def save_member():
 @app.route("/members")
 def members(): 
 
-    conn   = sqlite3.connect("/tmp/memberhub.db")
+    conn   = get_db()
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM members")
@@ -148,7 +155,7 @@ def dashboard():
     if "admin" not in session:
         return redirect("/")
     
-    conn = sqlite3.connect("/tmp/memberhub.db")
+    conn = get_db()
     cursor = conn.cursor()
 
     # TOTAL MEMBERS
@@ -226,7 +233,7 @@ def dashboard():
 @app.route("/delete/<int:id>")
 def delete_member(id): 
 
-    conn   = sqlite3.connect("/tmp/memberhub.db")
+    conn   = get_db()
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM members WHERE id=?", (id,))
@@ -279,7 +286,7 @@ def search():
 
     query = request.args.get("query", "")
 
-    conn = sqlite3.connect("/tmp/memberhub.db")
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute(
@@ -297,7 +304,7 @@ def search():
 @app.route("/edit/<int:id>")
 def edit_member(id):
 
-    conn = sqlite3.connect("/tmp/memberhub.db")
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM members WHERE id=?", (id,))
@@ -319,7 +326,7 @@ def update_member():
     join_date = request.form["join_date"]
     expiry_date = request.form["expiry_date"]
 
-    conn = sqlite3.connect("/tmp/memberhub.db")
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -351,7 +358,7 @@ def upload(id):
 
             file.save(filepath)
 
-            conn = sqlite3.connect("/tmp/memberhub.db")
+            conn = get_db()
             cursor = conn.cursor()
 
             cursor.execute(
@@ -370,7 +377,7 @@ def upload(id):
 @app.route("/documents/<int:id>")
 def documents(id):
 
-    conn = sqlite3.connect("/tmp/memberhub.db")
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute(
