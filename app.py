@@ -68,9 +68,33 @@ UPLOAD_FOLDER = "uploads"
 os.makedirs("uploads", exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-@app.route("/")
-def test():
-    return "App is working!"
+  # Home Page
+@app.route("/", methods=["GET","POST"])
+def login():
+
+    if request.method == "POST":
+
+        username = request.form["username"]
+        password = request.form["password"]
+
+        conn = sqlite3.connect("/tmp/memberhub.db")
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM admin WHERE username=? AND password=?",
+            (username,password)
+        )
+
+        admin = cursor.fetchone()
+        conn.close()
+
+        if admin:
+            session["admin"] = username
+            return redirect("/dashboard")
+        else:
+            return "Invalid Login"
+
+    return render_template("login.html")
 
   # Add Member Page
 @app.route("/add_member")
