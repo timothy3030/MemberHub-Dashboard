@@ -386,3 +386,7 @@ def documents(id):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    return f"Error occurred: {str(e)}"
