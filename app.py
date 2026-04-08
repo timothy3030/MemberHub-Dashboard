@@ -385,7 +385,10 @@ def documents(id):
     return render_template("documents.html", docs=docs)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run()
+
+# THIS LINE IS IMPORTANT FOR GUNICORN
+application = app
 
 @app.errorhandler(Exception)
 def handle_error(e):
